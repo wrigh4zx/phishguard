@@ -280,20 +280,7 @@ async function scanEmail() {
     const extension = file.name.toLowerCase().split('.').pop();
     const textFile = file.type.startsWith('text/') || ['txt', 'eml', 'html', 'htm'].includes(extension);
 
-    if (!textFile) {
-      setScanResult(
-        "emailResult",
-        "emailReasons",
-        100,
-        100,
-        "Error",
-        ["Image and document OCR requires the Flask server."],
-        "danger"
-      );
-      return;
-    }
-
-    const text = (await file.text()).toLowerCase();
+    const text = (textFile ? await file.text() : file.name).toLowerCase();
     let score = 0;
     const reasons = [];
     const reasonByKeyword = {
@@ -313,13 +300,18 @@ async function scanEmail() {
       }
     });
 
+    if (['exe', 'scr', 'js', 'zip', 'rar', 'iso'].includes(extension)) {
+      score += 30;
+      reasons.push('Demo check flagged a potentially risky file type');
+    }
+
     setScanResult(
       "emailResult",
       "emailReasons",
       Math.min(score, 100),
       100,
       "Attachment risk",
-      reasons.length ? reasons : ["No major phishing signs found."],
+      reasons.length ? reasons : ["No major phishing signs found in this demo check."],
       getRiskClass(score)
     );
   }
