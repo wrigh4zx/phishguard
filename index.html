@@ -30,7 +30,6 @@
           <section class="tab-panel active" id="panel-email" role="tabpanel" aria-labelledby="Email scanner">
             <p class="panel-title">Attachment upload</p>
             <p class="panel-copy">Upload an attachment to check it for suspicious content.</p>
-
             <label class="sr-only" for="emailAttachment">Upload a file</label>
             <div class="upload-field">
               <input id="emailAttachment" class="upload-input" type="file" accept=".eml,.txt,.html,.htm,.msg,.pdf,.doc,.docx,.zip,.rar,.iso,.png,.jpg,.jpeg,.webp" />
@@ -41,47 +40,38 @@
               </label>
               <button id="removeEmailAttachment" class="remove-file-button" type="button" hidden>Remove file</button>
             </div>
-
             <button id="emailScanButton" class="scan-button" data-input="emailAttachment" type="button">Scan Email</button>
           </section>
 
           <section class="tab-panel" id="panel-url" role="tabpanel" aria-labelledby="URL scanner" hidden>
             <p class="panel-title">URL scanner</p>
             <p class="panel-copy">Paste a link to look for shortening, lookalike domains, and risky patterns.</p>
-
             <label class="sr-only" for="urlInput">URL to scan</label>
             <input id="urlInput" type="url" placeholder="https://example.com/login" />
-
             <button id="urlScanButton" class="scan-button" data-input="urlInput" type="button">Scan URL</button>
           </section>
 
           <section class="tab-panel" id="panel-attachment" role="tabpanel" aria-labelledby="Attachment analyzer" hidden>
             <p class="panel-title">Attachment analyzer</p>
             <p class="panel-copy">Check a file name, extension, or description for risky attachment types.</p>
-
             <label class="sr-only" for="attachmentInput">Attachment details</label>
             <input id="attachmentInput" type="text" placeholder="invoice.pdf.exe or quarterly-report.zip" />
-
             <button id="attachmentScanButton" class="scan-button" data-input="attachmentInput" type="button">Analyze Attachment</button>
           </section>
 
           <section class="tab-panel" id="panel-password" role="tabpanel" aria-labelledby="Password checker" hidden>
             <p class="panel-title">Password checker</p>
             <p class="panel-copy">Estimate password strength from length, character mix, and common patterns.</p>
-
             <label class="sr-only" for="passwordInput">Password to check</label>
             <input id="passwordInput" type="password" placeholder="Enter a password to check" />
-
             <button id="passwordScanButton" class="scan-button" data-input="passwordInput" type="button">Check Password</button>
           </section>
 
           <section class="tab-panel" id="panel-breach" role="tabpanel" aria-labelledby="Data breach monitoring" hidden>
             <p class="panel-title">Data breach monitoring</p>
             <p class="panel-copy">Enter an email address to simulate breach exposure and next-step guidance.</p>
-
             <label class="sr-only" for="breachInput">Email for breach check</label>
             <input id="breachInput" type="email" placeholder="name@example.com" />
-
             <button id="breachScanButton" class="scan-button" data-input="breachInput" type="button">Check Breach Exposure</button>
           </section>
         </div>
@@ -89,35 +79,10 @@
     </main>
   </div>
 
-  <div class="results" data-result-panel="email">
-    <h2 id="emailResult">Attachment risk: 0/100</h2>
-    <ul id="emailReasons"></ul>
-    <p class="modal-note">Click anywhere to exit</p>
-  </div>
-
-  <div class="results" data-result-panel="url">
-    <h2 id="urlResult">URL risk: 0/100</h2>
-    <ul id="urlReasons"></ul>
-    <p class="modal-note">Click anywhere to exit</p>
-  </div>
-
-  <div class="results" data-result-panel="attachment">
-    <h2 id="attachmentResult">Attachment risk: 0/100</h2>
-    <ul id="attachmentReasons"></ul>
-    <p class="modal-note">Click anywhere to exit</p>
-  </div>
-
-  <div class="results" data-result-panel="password">
-    <h2 id="passwordResult">Password strength: 0/100</h2>
-    <ul id="passwordReasons"></ul>
-    <p class="modal-note">Click anywhere to exit</p>
-  </div>
-
-  <div class="results" data-result-panel="breach">
-    <h2 id="breachResult">Breach exposure: 0/100</h2>
-    <ul id="breachReasons"></ul>
-    <p class="modal-note">Click anywhere to exit</p>
-  </div>
-
+  <div class="results" data-result-panel="email"><h2 id="emailResult">Attachment risk: 0/100</h2><ul id="emailReasons"></ul><p class="modal-note">Click anywhere to exit</p></div>
+  <div class="results" data-result-panel="url"><h2 id="urlResult">URL risk: 0/100</h2><ul id="urlReasons"></ul><p class="modal-note">Click anywhere to exit</p></div>
+  <div class="results" data-result-panel="attachment"><h2 id="attachmentResult">Attachment risk: 0/100</h2><ul id="attachmentReasons"></ul><p class="modal-note">Click anywhere to exit</p></div>
+  <div class="results" data-result-panel="password"><h2 id="passwordResult">Password strength: 0/100</h2><ul id="passwordReasons"></ul><p class="modal-note">Click anywhere to exit</p></div>
+  <div class="results" data-result-panel="breach"><h2 id="breachResult">Breach exposure: 0/100</h2><ul id="breachReasons"></ul><p class="modal-note">Click anywhere to exit</p></div>
 </body>
 </html>
