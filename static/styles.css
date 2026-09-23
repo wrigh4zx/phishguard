@@ -118,8 +118,17 @@ h1 {
     letter-spacing: -0.04em;
 }
 
+.demo-label {
+    margin: 6px 0 0;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .intro {
-    margin: 8px 0 12px;
+    margin: 6px 0 12px;
     color: var(--muted);
     font-size: 0.92rem;
     max-width: 52ch;
