@@ -241,14 +241,50 @@ async function scanEmail() {
       getRiskClass(result.score)
     );
   } catch (error) {
+    const extension = file.name.toLowerCase().split('.').pop();
+    const textFile = file.type.startsWith('text/') || ['txt', 'eml', 'html', 'htm'].includes(extension);
+
+    if (!textFile) {
+      setScanResult(
+        "emailResult",
+        "emailReasons",
+        100,
+        100,
+        "Error",
+        ["Image and document OCR requires the Flask server."],
+        "danger"
+      );
+      return;
+    }
+
+    const text = (await file.text()).toLowerCase();
+    let score = 0;
+    const reasons = [];
+    const reasonByKeyword = {
+      urgent: 'Uses urgent language',
+      'verify your account': 'Asks you to verify your account',
+      password: 'Mentions password',
+      'click here': 'Tells you to click a link',
+      login: 'Mentions login',
+      'account suspended': 'Mentions account suspension',
+      'gift card': 'Mentions gift cards'
+    };
+
+    Object.entries(reasonByKeyword).forEach(function([keyword, reason]) {
+      if (text.includes(keyword)) {
+        score += { urgent: 20, 'verify your account': 25, password: 30, 'click here': 20, login: 20, 'account suspended': 25, 'gift card': 30 }[keyword];
+        reasons.push(reason);
+      }
+    });
+
     setScanResult(
       "emailResult",
       "emailReasons",
+      Math.min(score, 100),
       100,
-      100,
-      "Error",
-      ["Unable to communicate with the Flask server."],
-      "danger"
+      "Attachment risk",
+      reasons.length ? reasons : ["No major phishing signs found."],
+      getRiskClass(score)
     );
   }
 }
