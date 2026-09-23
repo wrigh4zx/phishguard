@@ -236,6 +236,26 @@ function setScanResult(resultId, reasonsId, score, maxScore, label, reasons, cla
     reasonsList.appendChild(li);
   });
 }
+
+function readImageDetails(file) {
+  return new Promise(function(resolve, reject) {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = function() {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file.name + ' image ' + image.naturalWidth + 'x' + image.naturalHeight + ' pixels');
+    };
+
+    image.onerror = function() {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Unable to read image metadata'));
+    };
+
+    image.src = objectUrl;
+  });
+}
+
 async function scanEmail() {
   if (!validateRequiredInput('emailAttachment', 'emailScanButton')) {
     return;
@@ -255,7 +275,8 @@ async function scanEmail() {
   try {
     const extension = file.name.toLowerCase().split('.').pop();
     const textFile = file.type.startsWith('text/') || ['txt', 'eml', 'html', 'htm'].includes(extension);
-    const text = (textFile ? await file.text() : file.name).toLowerCase();
+    const imageFile = file.type.startsWith('image/') || ['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(extension);
+    const text = (textFile ? await file.text() : imageFile ? await readImageDetails(file) : file.name).toLowerCase();
     let score = 0;
     const reasons = [];
     const reasonByKeyword = {
@@ -278,6 +299,10 @@ async function scanEmail() {
     if (['exe', 'scr', 'js', 'zip', 'rar', 'iso'].includes(extension)) {
       score += 30;
       reasons.push('Demo check flagged a potentially risky file type');
+    }
+
+    if (imageFile) {
+      reasons.push('Demo image analysis read the filename and image dimensions');
     }
 
     setScanResult(
