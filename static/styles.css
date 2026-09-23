@@ -375,6 +375,37 @@ button:active {
     transform: translateY(0);
 }
 
+.scan-progress {
+    width: 100%;
+    height: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(99, 210, 255, 0.14);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+}
+
+.scan-progress.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scan-progress span {
+    display: block;
+    width: 36%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scanProgress 1s ease-in-out infinite;
+}
+
+button.scan-button:disabled {
+    cursor: wait;
+    filter: brightness(0.94);
+}
+
 button.scan-button.requires-input,
 button.scan-button.requires-input {
     border: 1px solid rgba(99, 210, 255, 0.45);
@@ -617,5 +648,15 @@ button.scan-button.requires-input:hover {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes scanProgress {
+    from {
+        transform: translateX(-140%);
+    }
+
+    to {
+        transform: translateX(320%);
     }
 }

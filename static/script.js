@@ -98,6 +98,42 @@ function getRiskClass(score) {
   return 'safe';
 }
 
+function setScanLoading(button, isLoading) {
+  let progress = button.nextElementSibling;
+
+  if (!progress || !progress.classList.contains('scan-progress')) {
+    progress = document.createElement('div');
+    progress.className = 'scan-progress';
+    progress.setAttribute('role', 'progressbar');
+    progress.setAttribute('aria-label', 'Scan in progress');
+    progress.innerHTML = '<span></span>';
+    button.insertAdjacentElement('afterend', progress);
+  }
+
+  button.disabled = isLoading;
+  button.setAttribute('aria-busy', String(isLoading));
+  progress.classList.toggle('is-visible', isLoading);
+}
+
+async function runScan(button, scanFunction) {
+  if (button.dataset.scanning === 'true') {
+    return;
+  }
+
+  button.dataset.scanning = 'true';
+  setScanLoading(button, true);
+
+  try {
+    await new Promise(function(resolve) {
+      setTimeout(resolve, 120);
+    });
+    await scanFunction();
+  } finally {
+    setScanLoading(button, false);
+    button.dataset.scanning = 'false';
+  }
+}
+
 scanButtons.forEach(function(button) {
   const input = document.getElementById(button.dataset.input);
 
@@ -482,8 +518,18 @@ function checkBreach() {
   setScanResult('breachResult', 'breachReasons', score, 100, 'Breach exposure', reasons, score >= 60 ? 'danger' : score >= 30 ? 'warning' : 'safe');
 }
 
-document.getElementById('emailScanButton').addEventListener('click', scanEmail);
-document.getElementById('urlScanButton').addEventListener('click', scanUrl);
-document.getElementById('attachmentScanButton').addEventListener('click', scanAttachment);
-document.getElementById('passwordScanButton').addEventListener('click', checkPassword);
-document.getElementById('breachScanButton').addEventListener('click', checkBreach);
+document.getElementById('emailScanButton').addEventListener('click', function() {
+  runScan(this, scanEmail);
+});
+document.getElementById('urlScanButton').addEventListener('click', function() {
+  runScan(this, scanUrl);
+});
+document.getElementById('attachmentScanButton').addEventListener('click', function() {
+  runScan(this, scanAttachment);
+});
+document.getElementById('passwordScanButton').addEventListener('click', function() {
+  runScan(this, checkPassword);
+});
+document.getElementById('breachScanButton').addEventListener('click', function() {
+  runScan(this, checkBreach);
+});
