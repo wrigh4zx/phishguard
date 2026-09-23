@@ -227,6 +227,10 @@ async function scanEmail() {
 
     const result = await response.json();
 
+    if (!response.ok) {
+      throw new Error(result.reasons?.[0] || 'The file could not be scanned.');
+    }
+
     setScanResult(
       "emailResult",
       "emailReasons",

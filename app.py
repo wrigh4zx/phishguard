@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from PIL import Image
 import pytesseract
 import io
+from pathlib import Path
 
 app = Flask(__name__)
 
@@ -47,8 +48,22 @@ def scan():
             "reasons": ["No file uploaded."]
         })
 
-    image = Image.open(io.BytesIO(file.read()))
-    extracted_text = pytesseract.image_to_string(image)
+    file_bytes = file.read()
+    extension = Path(file.filename or "").suffix.lower()
+    text_extensions = {".txt", ".eml", ".html", ".htm"}
+
+    try:
+        if file.mimetype.startswith("text/") or extension in text_extensions:
+            extracted_text = file_bytes.decode("utf-8", errors="replace")
+        else:
+            image = Image.open(io.BytesIO(file_bytes))
+            extracted_text = pytesseract.image_to_string(image)
+    except Exception:
+        return jsonify({
+            "score": 0,
+            "reasons": ["The uploaded file is not a supported text or image file."],
+            "extractedText": ""
+        }), 415
 
     score, reasons = scan_text(extracted_text)
 
@@ -59,4 +74,4 @@ def scan():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
