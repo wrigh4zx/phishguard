@@ -252,34 +252,9 @@ async function scanEmail() {
     return;
   }
 
-  const formData = new FormData();
-  formData.append("file", file);
-
   try {
-    const response = await fetch("/scan", {
-      method: "POST",
-      body: formData
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.reasons?.[0] || 'The file could not be scanned.');
-    }
-
-    setScanResult(
-      "emailResult",
-      "emailReasons",
-      result.score,
-      100,
-      "Attachment risk",
-      result.reasons,
-      getRiskClass(result.score)
-    );
-  } catch (error) {
     const extension = file.name.toLowerCase().split('.').pop();
     const textFile = file.type.startsWith('text/') || ['txt', 'eml', 'html', 'htm'].includes(extension);
-
     const text = (textFile ? await file.text() : file.name).toLowerCase();
     let score = 0;
     const reasons = [];
@@ -313,6 +288,16 @@ async function scanEmail() {
       "Attachment risk",
       reasons.length ? reasons : ["No major phishing signs found in this demo check."],
       getRiskClass(score)
+    );
+  } catch (error) {
+    setScanResult(
+      "emailResult",
+      "emailReasons",
+      0,
+      100,
+      "Attachment risk",
+      ["The demo could not read this file."],
+      "safe"
     );
   }
 }
