@@ -256,21 +256,6 @@ function readImageDetails(file) {
   });
 }
 
-async function readImageText(file) {
-  const imageDetails = await readImageDetails(file);
-
-  if (!window.Tesseract) {
-    return imageDetails;
-  }
-
-  try {
-    const result = await window.Tesseract.recognize(file, 'eng');
-    return imageDetails + ' ' + result.data.text;
-  } catch (error) {
-    return imageDetails;
-  }
-}
-
 async function scanEmail() {
   if (!validateRequiredInput('emailAttachment', 'emailScanButton')) {
     return;
@@ -291,7 +276,7 @@ async function scanEmail() {
     const extension = file.name.toLowerCase().split('.').pop();
     const textFile = file.type.startsWith('text/') || ['txt', 'eml', 'html', 'htm'].includes(extension);
     const imageFile = file.type.startsWith('image/') || ['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(extension);
-    const text = (textFile ? await file.text() : imageFile ? await readImageText(file) : file.name).toLowerCase();
+    const text = (textFile ? await file.text() : imageFile ? await readImageDetails(file) : file.name).toLowerCase();
     let score = 0;
     const reasons = [];
     const reasonByKeyword = {
@@ -317,7 +302,7 @@ async function scanEmail() {
     }
 
     if (imageFile) {
-      reasons.push('Demo image analysis read the filename, dimensions, and visible words');
+      reasons.push('Demo image analysis read the filename and image dimensions');
     }
 
     setScanResult(
